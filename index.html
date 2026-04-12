@@ -680,7 +680,7 @@
     <div class="success-title">¡Registro exitoso!</div>
     <div class="success-text">
       <span class="success-name" id="successNombre"></span>, tu información fue guardada correctamente.<br>
-      En las próximas horas recibirás tu plan sanitario personalizado y el calendario de actividades por WhatsApp.
+      En un momento verás tu plan sanitario personalizado. También recibirás el calendario por WhatsApp.
     </div>
     <button class="btn-nuevo" onclick="resetForm()">Registrar otro establecimiento</button>
   </div>
@@ -691,7 +691,7 @@
   // =============================================
   // CONFIGURACIÓN — REEMPLAZÁ CON TU URL
   // =============================================
-  const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/https://script.google.com/macros/s/AKfycbxSt1XxMSHmmyuEf_fv_ANUkqaE2V-QtAZF_WW_kJLcCqEAmzw0r0ftB_BsAafqlBzoLg/exec/exec';
+  const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxSt1XxMSHmmyuEf_fv_ANUkqaE2V-QtAZF_WW_kJLcCqEAmzw0r0ftB_BsAafqlBzoLg/exec';
   // =============================================
 
   const risks = {
@@ -845,12 +845,19 @@
   });
 
   function showSuccess(nombre) {
+    const data = collectData();
     document.getElementById('mainForm').style.display = 'none';
     document.getElementById('progressFill').style.width = '100%';
     const success = document.getElementById('successScreen');
     success.style.display = 'block';
     document.getElementById('successNombre').textContent = nombre;
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Redirigir al generador del plan en 2 segundos
+    const params = new URLSearchParams();
+    Object.entries(data).forEach(([k, v]) => params.append(k, v));
+    setTimeout(() => {
+      window.location.href = 'plan_generator.html?' + params.toString();
+    }, 2000);
   }
 
   function resetForm() {
