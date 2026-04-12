@@ -289,9 +289,8 @@ function calcularPlan(p) {
   const eventos = []; // { fecha, titulo, descripcion, categoria, mesajes? }
 
   const finPartos       = parseDate(p.fin_partos);
-  const finEntore       = parseDate(p.fin_entore);
-  const inicioServicios = parseDate(p.inicio_servicios);
   const finServicios    = parseDate(p.fin_servicios);
+  const inicioServicios = parseDate(p.inicio_servicios);
 
   // -------- 1. ENFERMEDADES CLOSTRIDIALES, RESPIRATORIAS Y OCULARES --------
   if (finPartos) {
@@ -304,8 +303,8 @@ function calcularPlan(p) {
   }
 
   // -------- 2. LEPTOSPIROSIS Y ECOGRAFÍA --------
-  if (finEntore) {
-    const fecha = addDays(finEntore, 45);
+  if (finServicios) {
+    const fecha = addDays(finServicios, 45);
     eventos.push({
       fecha,
       titulo: 'Vacunación contra Leptospirosis + Diagnóstico ecográfico',
