@@ -315,25 +315,25 @@ function calcularPlan(p) {
 
   // -------- 3. VACUNA REPRODUCTIVA PRE-SERVICIOS Y EVALUACIÓN DE TOROS --------
   if (inicioServicios) {
-    // Evaluación de toros: 80 días antes
+    // Evaluación anatómica y funcional de toros: 80 días antes
     eventos.push({
       fecha: addDays(inicioServicios, -80),
-      titulo: 'Evaluación de aptitud de toros',
-      descripcion: 'Verificar que los toros estén aptos para el servicio. Evaluar condición corporal, aparato reproductor y capacidad de monta.',
+      titulo: 'Evaluación anatómica y funcional de Toros',
+      descripcion: 'Realizar evaluación completa de aptitud reproductiva de los toros: condición corporal, aparato reproductor, capacidad de monta y calidad seminal. Hacerlo con tiempo suficiente para reemplazar toros si es necesario.',
       categoria: 'veterinario'
     });
-    // Vacuna reproductiva vaquillonas: 60 días antes
+    // Vacuna reproductiva vaquillonas: 1ª dosis, 60 días antes
     eventos.push({
       fecha: addDays(inicioServicios, -60),
-      titulo: 'Vacuna reproductiva vaquillonas (1ª dosis)',
-      descripcion: 'Vacunar hembras nuevas que ingresan a servicios reproductivos. Se necesitan 2 dosis para evitar pérdidas embrionarias y abortos.',
+      titulo: 'Vacuna reproductiva vaquillonas — 1ª dosis',
+      descripcion: 'Primera dosis de vacuna reproductiva para vaquillonas que ingresan al servicio. Se requieren 2 dosis para lograr inmunidad adecuada y evitar pérdidas embrionarias y abortos.',
       categoria: 'vacunacion'
     });
-    // Vacuna reproductiva vaquillonas: 30 días antes
+    // Vacuna reproductiva vaquillonas 2ª dosis + vacas: 30 días antes
     eventos.push({
       fecha: addDays(inicioServicios, -30),
-      titulo: 'Vacuna reproductiva vaquillonas (2ª dosis) + Vacas',
-      descripcion: 'Segunda dosis para vaquillonas. Vacas con vacunación del año anterior reciben una sola dosis anual de revacunación 30 días antes del servicio. Categorías menores de 2 años deben estar desparasitadas.',
+      titulo: 'Vacuna reproductiva vaquillonas — 2ª dosis + Revacunación vacas',
+      descripcion: 'Segunda dosis de vacuna reproductiva para vaquillonas. Las vacas vacunadas el año anterior reciben una única dosis de revacunación anual 30 días antes del servicio. Categorías menores de 2 años deben estar desparasitadas.',
       categoria: 'vacunacion'
     });
   }
@@ -392,7 +392,56 @@ function calcularPlan(p) {
     });
   }
 
-  // -------- 8. PARÁSITOS GASTROINTESTINALES (<2 años) --------
+  // -------- 8. GARRAPATAS --------
+  if (p.garrapatas === 'si') {
+    // Primera generación: agosto, septiembre, octubre
+    [7, 8, 9].forEach(m => {
+      eventos.push({
+        fecha: proximoMes(m),
+        titulo: 'Control garrapatas — 1ª generación (familia 1)',
+        descripcion: 'Tratar contra primera generación de garrapatas con una familia 1 de garrapaticidas. Consulte a su veterinario para seleccionar el producto adecuado y respetar los tiempos de carencia.',
+        categoria: 'ecto'
+      });
+    });
+    // Segunda generación: noviembre, diciembre, enero
+    [10, 11, 0].forEach(m => {
+      eventos.push({
+        fecha: proximoMes(m),
+        titulo: 'Control garrapatas — 2ª generación (familia 2)',
+        descripcion: 'Tratar contra segunda generación de garrapatas con una familia 2 de garrapaticidas. Rotar familia de garrapaticidas para evitar resistencia. Consulte a su veterinario.',
+        categoria: 'ecto'
+      });
+    });
+    // Tercera generación: febrero, marzo, abril, mayo
+    [1, 2, 3, 4].forEach(m => {
+      eventos.push({
+        fecha: proximoMes(m),
+        titulo: 'Control garrapatas — 3ª generación (familia 3)',
+        descripcion: 'Tratar contra tercera generación de garrapatas con una familia 3 de garrapaticidas. Rotar familia de garrapaticidas para evitar resistencia. Consulte a su veterinario.',
+        categoria: 'ecto'
+      });
+    });
+  }
+
+  // -------- 9. TRISTEZA BOVINA --------
+  if (p.tristeza === 'si' && finPartos) {
+    const vac1Tristeza = addDays(finPartos, 90);
+    const vac2Tristeza = addDays(vac1Tristeza, 60);
+    eventos.push({
+      fecha: vac1Tristeza,
+      titulo: 'Vacunación contra Tristeza bovina (terneros/as)',
+      descripcion: 'Vacunación contra Tristeza (Babesiosis/Anaplasmosis) de terneros/as mayores a los 3 meses. Aplicar en zona con presencia de garrapatas portadoras.',
+      categoria: 'vacunacion'
+    });
+    eventos.push({
+      fecha: vac2Tristeza,
+      titulo: 'Revacunación contra Tristeza bovina (terneros/as)',
+      descripcion: 'Revacunación contra Tristeza de terneros/as, 60 días después de la primera dosis para completar la inmunización.',
+      categoria: 'vacunacion'
+    });
+  }
+
+  // -------- 10. PARÁSITOS GASTROINTESTINALES (<2 años) --------
   const mesesParasitos = [0, 2, 4, 6, 8, 10]; // Ene, Mar, May, Jul, Sep, Nov
   mesesParasitos.forEach(m => {
     eventos.push({
@@ -403,7 +452,7 @@ function calcularPlan(p) {
     });
   });
 
-  // -------- 9. FIEBRE AFTOSA --------
+  // -------- 11. FIEBRE AFTOSA --------
   // Fechas fijas (el veterinario las agrega manualmente)
   // Se dejan indicadas como placeholder
   eventos.push({
