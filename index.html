@@ -405,6 +405,13 @@
   }
 
   /* VALIDATION MSG */
+  .field-hint {
+    font-size: 11.5px;
+    color: var(--gris);
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
   .field-error {
     font-size: 11.5px;
     color: var(--rojo);
@@ -536,26 +543,23 @@
         </div>
       </div>
 
-      <div class="field-grid-2">
-        <div class="field">
-          <label>Finalización de partos anteriores</label>
-          <input type="date" id="fin_partos" />
-        </div>
-        <div class="field">
-          <label>Finalización de entore</label>
-          <input type="date" id="fin_entore" />
-        </div>
+      <div class="field">
+        <label>Finalización de partos anteriores</label>
+        <input type="date" id="fin_partos" />
+        <div class="field-hint">Fecha en que terminaron de parir las vacas de la temporada anterior.</div>
       </div>
 
       <div class="field-grid-2">
         <div class="field">
           <label>Inicio de servicios reproductivos <span class="required-dot"></span></label>
           <input type="date" id="inicio_servicios" required />
+          <div class="field-hint">Fecha en la que considera ingresar toros o comenzar con inseminación artificial.</div>
           <div class="field-error" id="err-inicio_servicios">Requerido.</div>
         </div>
         <div class="field">
           <label>Fin de servicios reproductivos <span class="required-dot"></span></label>
           <input type="date" id="fin_servicios" required />
+          <div class="field-hint">Fecha en la que considera retirar toros o terminar de inseminar.</div>
           <div class="field-error" id="err-fin_servicios">Requerido.</div>
         </div>
       </div>
@@ -775,7 +779,6 @@
       ubicacion: g('ubicacion'),
       celular: g('celular'),
       fin_partos: g('fin_partos'),
-      fin_entore: g('fin_entore'),
       inicio_servicios: g('inicio_servicios'),
       fin_servicios: g('fin_servicios'),
       brucelosis: risks.brucelosis || '',
