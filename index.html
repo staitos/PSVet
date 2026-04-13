@@ -257,10 +257,10 @@
     font-weight: 500;
   }
 
-  .yn-btn.no-active {
-    background: var(--rojo-claro);
-    border-color: #e8a09a;
-    color: #922b21;
+  .yn-btn.nose-active {
+    background: var(--tierra-claro);
+    border-color: var(--tierra);
+    color: #5a3a00;
     font-weight: 500;
   }
 
@@ -523,10 +523,16 @@
         <div class="field-error" id="err-establecimiento">Ingresá el nombre del establecimiento.</div>
       </div>
 
-      <div class="field">
-        <label>Ubicación / Departamento <span class="required-dot"></span></label>
-        <input type="text" id="ubicacion" placeholder="Ej: Tacuarembó, Uruguay" required />
-        <div class="field-error" id="err-ubicacion">Ingresá la ubicación.</div>
+      <div class="field-grid-2">
+        <div class="field">
+          <label>Departamento <span class="required-dot"></span></label>
+          <input type="text" id="ubicacion" placeholder="Ej: Tacuarembó" required />
+          <div class="field-error" id="err-ubicacion">Ingresá el departamento.</div>
+        </div>
+        <div class="field">
+          <label>Paraje</label>
+          <input type="text" id="paraje" placeholder="Ej: Paso del Cerro" />
+        </div>
       </div>
 
       <div class="field">
@@ -548,7 +554,7 @@
           </svg>
         </div>
         <div>
-          <div class="card-title">Fechas del ciclo productivo</div>
+          <div class="card-title">Fechas del ciclo reproductivo</div>
           <div class="card-subtitle">Seleccioná las fechas clave de tu rodeo</div>
         </div>
       </div>
@@ -602,6 +608,17 @@
         </div>
       </div>
 
+      <div class="risk-item" id="r-neospora">
+        <div>
+          <div class="risk-label">Neospora</div>
+          <div class="risk-hint">Causa abortos en bovinos</div>
+        </div>
+        <div class="risk-yn">
+          <button type="button" class="yn-btn" onclick="setRisk('neospora','si',this)">Sí</button>
+          <button type="button" class="yn-btn" onclick="setRisk('neospora','no',this)">No</button>
+        </div>
+      </div>
+
       <div class="risk-item" id="r-garrapatas">
         <div>
           <div class="risk-label">Presencia de garrapatas</div>
@@ -621,6 +638,7 @@
         <div class="risk-yn">
           <button type="button" class="yn-btn" onclick="setRisk('tristeza','si',this)">Sí</button>
           <button type="button" class="yn-btn" onclick="setRisk('tristeza','no',this)">No</button>
+          <button type="button" class="yn-btn" onclick="setRisk('tristeza','nose',this)">No sé</button>
         </div>
       </div>
 
@@ -632,6 +650,7 @@
         <div class="risk-yn">
           <button type="button" class="yn-btn" onclick="setRisk('carbunco','si',this)">Sí</button>
           <button type="button" class="yn-btn" onclick="setRisk('carbunco','no',this)">No</button>
+          <button type="button" class="yn-btn" onclick="setRisk('carbunco','nose',this)">No sé</button>
         </div>
       </div>
 
@@ -643,6 +662,7 @@
         <div class="risk-yn">
           <button type="button" class="yn-btn" onclick="setRisk('paramphistomum','si',this)">Sí</button>
           <button type="button" class="yn-btn" onclick="setRisk('paramphistomum','no',this)">No</button>
+          <button type="button" class="yn-btn" onclick="setRisk('paramphistomum','nose',this)">No sé</button>
         </div>
       </div>
 
@@ -654,6 +674,7 @@
         <div class="risk-yn">
           <button type="button" class="yn-btn" onclick="setRisk('saguaype','si',this)">Sí</button>
           <button type="button" class="yn-btn" onclick="setRisk('saguaype','no',this)">No</button>
+          <button type="button" class="yn-btn" onclick="setRisk('saguaype','nose',this)">No sé</button>
         </div>
       </div>
 
@@ -709,7 +730,7 @@
   // =============================================
 
   const risks = {
-    brucelosis: null, garrapatas: null, tristeza: null,
+    brucelosis: null, neospora: null, garrapatas: null, tristeza: null,
     carbunco: null, paramphistomum: null, saguaype: null, mosca: null
   };
 
@@ -717,9 +738,11 @@
     risks[name] = val;
     const group = btn.closest('.risk-yn');
     group.querySelectorAll('.yn-btn').forEach(b => {
-      b.classList.remove('si-active', 'no-active');
+      b.classList.remove('si-active', 'no-active', 'nose-active');
     });
-    btn.classList.add(val === 'si' ? 'si-active' : 'no-active');
+    if (val === 'si') btn.classList.add('si-active');
+    else if (val === 'no') btn.classList.add('no-active');
+    else btn.classList.add('nose-active');
     const item = document.getElementById('r-' + name);
     item.classList.toggle('riesgo-si', val === 'si');
     updateProgress();
@@ -730,7 +753,7 @@
 
   function updateProgress() {
     let filled = 0;
-    const total = requiredFields.length + 7; // + 7 riesgos
+    const total = requiredFields.length + 8; // + 8 riesgos
     requiredFields.forEach(id => {
       if (document.getElementById(id)?.value.trim()) filled++;
     });
@@ -787,11 +810,13 @@
       nombre: g('nombre'),
       establecimiento: g('establecimiento'),
       ubicacion: g('ubicacion'),
+      paraje: g('paraje'),
       celular: g('celular'),
       fin_partos: g('fin_partos'),
       inicio_servicios: g('inicio_servicios'),
       fin_servicios: g('fin_servicios'),
       brucelosis: risks.brucelosis || '',
+      neospora: risks.neospora || '',
       garrapatas: risks.garrapatas || '',
       tristeza: risks.tristeza || '',
       carbunco: risks.carbunco || '',
