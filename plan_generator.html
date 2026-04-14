@@ -163,6 +163,8 @@ body {
 /* NO EVENTOS */
 .no-eventos { font-size: 13px; color: #bbb; font-style: italic; padding: 0.5rem 0; }
 
+.mes-pasado { opacity: 0.65; }
+
 /* LOADING */
 .loading {
   text-align: center; padding: 4rem 2rem;
@@ -293,11 +295,12 @@ function mesAnio(date) {
   return { mes: date.getMonth(), anio: date.getFullYear() };
 }
 
-// Obtener próxima ocurrencia de un mes (desde hoy)
+// Obtener fecha de un mes en el año actual o siguiente si ya pasó más de 6 meses
 function proximoMes(mesIdx) {
   const hoy = new Date();
   let anio = hoy.getFullYear();
-  if (mesIdx < hoy.getMonth()) anio++;
+  // Si el mes ya pasó hace más de 1 mes, usar el año siguiente
+  if (mesIdx < hoy.getMonth() - 1) anio++;
   return new Date(anio, mesIdx, 1);
 }
 
@@ -520,26 +523,22 @@ function calcularPlan(p) {
 // ======================================================
 function agruparPorMes(eventos) {
   const hoy = new Date();
-  const fin = new Date(hoy.getFullYear() + 1, hoy.getMonth(), 1);
   const mapa = {};
 
-  // Inicializar los próximos 12 meses
-  for (let i = 0; i < 12; i++) {
-    const d = new Date(hoy.getFullYear(), hoy.getMonth() + i, 1);
-    const key = `${d.getFullYear()}-${d.getMonth()}`;
-    mapa[key] = { mes: d.getMonth(), anio: d.getFullYear(), eventos: [] };
-  }
-
+  // Agregar todos los eventos al mapa sin restricción de fechas
   eventos.forEach(ev => {
     if (ev.sinFecha) {
-      const key = `${hoy.getFullYear()}-${hoy.getMonth()}`;
-      if (mapa[key]) mapa[key].eventos.push(ev);
+      const key = `${hoy.getFullYear()}-${String(hoy.getMonth()).padStart(2,'0')}`;
+      if (!mapa[key]) mapa[key] = { mes: hoy.getMonth(), anio: hoy.getFullYear(), eventos: [] };
+      mapa[key].eventos.push(ev);
       return;
     }
-    const key = `${ev.fecha.getFullYear()}-${ev.fecha.getMonth()}`;
-    if (mapa[key]) mapa[key].eventos.push(ev);
+    const key = `${ev.fecha.getFullYear()}-${String(ev.fecha.getMonth()).padStart(2,'0')}`;
+    if (!mapa[key]) mapa[key] = { mes: ev.fecha.getMonth(), anio: ev.fecha.getFullYear(), eventos: [] };
+    mapa[key].eventos.push(ev);
   });
 
+  // Ordenar cronológicamente
   return Object.values(mapa).sort((a, b) => {
     if (a.anio !== b.anio) return a.anio - b.anio;
     return a.mes - b.mes;
@@ -582,37 +581,43 @@ function render(p, eventos, porMes) {
     </div>
 
     <div id="vistaAnual" class="anual-grid">
-      ${porMes.map(m => `
-        <div class="mes-card">
-          <div class="mes-nombre">${MESES[m.mes]} ${m.anio}</div>
+      ${porMes.map(m => {
+        const hoy = new Date();
+        const esPasado = (m.anio < hoy.getFullYear()) || (m.anio === hoy.getFullYear() && m.mes < hoy.getMonth());
+        return `
+        <div class="mes-card${esPasado ? ' mes-pasado' : ''}">
+          <div class="mes-nombre">${MESES[m.mes]} ${m.anio}${esPasado ? ' <span style="font-size:9px;color:#aaa;font-weight:400;">(realizado)</span>' : ''}</div>
           ${m.eventos.length === 0
             ? '<div class="mes-vacio">Sin actividades</div>'
             : m.eventos.map(ev => `
               <div class="evento-pill">
-                <div class="evento-dot" style="background:${COLORES[ev.categoria].hex}"></div>
-                <div class="evento-texto">
+                <div class="evento-dot" style="background:${esPasado ? '#bbb' : COLORES[ev.categoria].hex}"></div>
+                <div class="evento-texto" style="${esPasado ? 'color:#aaa;' : ''}">
                   ${ev.titulo}
                   ${ev.fecha ? `<span class="evento-fecha">${formatDate(ev.fecha)}</span>` : ''}
                 </div>
               </div>
             `).join('')
           }
-        </div>
-      `).join('')}
+        </div>`;
+      }).join('')}
     </div>
 
     <div id="vistaMensual" class="mensual-wrap">
-      ${porMes.map((m, idx) => `
-        <div class="mes-detalle">
+      ${porMes.map((m, idx) => {
+        const hoy = new Date();
+        const esPasado = (m.anio < hoy.getFullYear()) || (m.anio === hoy.getFullYear() && m.mes < hoy.getMonth());
+        return `
+        <div class="mes-detalle${esPasado ? ' mes-pasado' : ''}">
           <div class="mes-detalle-header">
-            <div class="mes-num">${String(idx + 1).padStart(2,'0')}</div>
-            <div class="mes-detalle-nombre">${MESES[m.mes]} ${m.anio}</div>
+            <div class="mes-num" style="${esPasado ? 'background:#f0f0f0;color:#aaa;' : ''}">${String(idx + 1).padStart(2,'0')}</div>
+            <div class="mes-detalle-nombre">${MESES[m.mes]} ${m.anio}${esPasado ? ' <span style="font-size:11px;color:#aaa;font-weight:400;">— ya realizado</span>' : ''}</div>
           </div>
           ${m.eventos.length === 0
             ? '<div class="no-eventos">Sin actividades programadas este mes.</div>'
             : m.eventos.map(ev => `
-              <div class="evento-row">
-                <div class="evento-cat-dot" style="background:${COLORES[ev.categoria].hex}"></div>
+              <div class="evento-row" style="${esPasado ? 'opacity:0.5;' : ''}">
+                <div class="evento-cat-dot" style="background:${esPasado ? '#bbb' : COLORES[ev.categoria].hex}"></div>
                 <div class="evento-det">
                   <strong>${ev.titulo}</strong>
                   <span>${ev.descripcion}</span>
@@ -621,8 +626,8 @@ function render(p, eventos, porMes) {
               </div>
             `).join('')
           }
-        </div>
-      `).join('')}
+        </div>`;
+      }).join('')}
     </div>
   `;
 }
@@ -666,42 +671,55 @@ window.generarPDF = function() {
   doc.setFillColor(26, 122, 85);
   doc.rect(0, 0, W, 60, 'F');
 
-  // Logo círculo
-  doc.setFillColor(255, 255, 255, 0.2);
-  doc.circle(W/2, 30, 18, 'F');
-  doc.setFillColor(255, 255, 255);
-  doc.circle(W/2, 30, 12, 'F');
-  doc.setFillColor(26, 122, 85);
-  doc.circle(W/2, 30, 6, 'F');
+  // Logo real desde imagen en la página
+  try {
+    const logoImg = document.querySelector('img[src="logo.jpeg"]');
+    if (logoImg && logoImg.complete) {
+      const canvas = document.createElement('canvas');
+      canvas.width = logoImg.naturalWidth;
+      canvas.height = logoImg.naturalHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(logoImg, 0, 0);
+      const logoData = canvas.toDataURL('image/jpeg');
+      const logoW = 60;
+      const logoH = (logoImg.naturalHeight / logoImg.naturalWidth) * logoW;
+      doc.addImage(logoData, 'JPEG', W/2 - logoW/2, 70, logoW, logoH);
+      y = 70 + logoH + 8;
+    } else {
+      y = 70;
+    }
+  } catch(e) {
+    y = 70;
+  }
 
   doc.setFontSize(20);
   doc.setFont('helvetica', 'bold');
-  doc.setTextColor(255, 255, 255);
-  doc.text('Plan Sanitario Ganadero', W/2, 70, { align: 'center' });
+  doc.setTextColor(13, 82, 56);
+  doc.text('Plan Sanitario Ganadero', W/2, y + 10, { align: 'center' });
 
   doc.setFontSize(12);
   doc.setFont('helvetica', 'normal');
-  doc.setTextColor(13, 82, 56);
-  doc.text('Calendario Personalizado de Actividades', W/2, 80, { align: 'center' });
+  doc.setTextColor(90, 90, 90);
+  doc.text('Calendario Personalizado de Actividades', W/2, y + 20, { align: 'center' });
 
   // Info del productor
   doc.setFillColor(232, 245, 239);
-  doc.roundedRect(mg, 90, W - mg*2, 45, 4, 4, 'F');
+  doc.roundedRect(mg, y + 28, W - mg*2, 50, 4, 4, 'F');
   doc.setFontSize(10);
   doc.setTextColor(26, 122, 85);
   doc.setFont('helvetica', 'bold');
-  doc.text('PRODUCTOR', mg + 8, 102);
+  doc.text('PRODUCTOR', mg + 8, y + 40);
   doc.setFont('helvetica', 'normal');
   doc.setTextColor(28, 28, 26);
   doc.setFontSize(13);
-  doc.text(p.nombre, mg + 8, 112);
+  doc.text(p.nombre, mg + 8, y + 50);
   doc.setFontSize(10);
   doc.setTextColor(90, 90, 90);
-  doc.text(p.establecimiento + (p.ubicacion ? '  ·  ' + p.ubicacion : ''), mg + 8, 120);
-  doc.text('Cel: ' + p.celular, mg + 8, 128);
+  doc.text(p.establecimiento + (p.ubicacion ? '  ·  ' + p.ubicacion : '') + (p.paraje ? '  ·  ' + p.paraje : ''), mg + 8, y + 58);
+  doc.text('Cel: ' + p.celular, mg + 8, y + 66);
 
   // Leyenda portada
-  y = 148;
+  y = y + 90;
   doc.setFontSize(9);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(28, 28, 26);
