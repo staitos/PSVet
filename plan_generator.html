@@ -363,7 +363,7 @@ function calcularPlan(p) {
       eventos.push({
         fecha: vac1,
         titulo: 'Vacunación contra Brucelosis (terneras)',
-        descripcion: 'Vacunar terneras entre 3 y 8 meses de edad contra Brucelosis (Brucella abortus). Obligatoria en zonas de riesgo. Notificar al veterinario oficial.',
+        descripcion: 'Vacunar terneras entre 3 y 8 meses de edad contra Brucelosis (Brucella abortus). Recuerde al veterinario actuante que suba el certificado de vacunación al SINAVELE.',
         categoria: 'vacunacion'
       });
     }
@@ -373,7 +373,7 @@ function calcularPlan(p) {
     eventos.push({ fecha: vac2, titulo: 'Revacunación respiratoria (terneros/as)', descripcion: 'Segunda dosis de vacuna respiratoria para completar inmunización previo al destete.', categoria: 'vacunacion' });
 
     // -------- 1c. VACUNA QUERATOCONJUNTIVITIS --------
-    eventos.push({ fecha: vac1, titulo: 'Vacunación contra Queratoconjuntivitis (terneros/as)', descripcion: 'Vacunar terneros/as contra queratoconjuntivitis infecciosa bovina (Moraxella bovis). Aplicar junto con las otras vacunas del destete.', categoria: 'vacunacion' });
+    eventos.push({ fecha: vac1, titulo: 'Vacunación contra Queratoconjuntivitis (terneros/as)', descripcion: 'Vacunar terneros/as contra queratoconjuntivitis infecciosa bovina. Puede vacunar junto a otras vacunas si lo realiza en el mismo día, preferentemente del otro lado de la tabla del cuello.', categoria: 'vacunacion' });
   }
 
   // -------- 2. LEPTOSPIROSIS Y ECOGRAFÍA --------
@@ -439,13 +439,13 @@ function calcularPlan(p) {
     eventos.push({
       fecha: proximoMes(3), // Abril
       titulo: 'Dosificación contra Saguaypé (Fasciola hepatica)',
-      descripcion: 'Dosificar al ganado contra saguaypé / distomatosis hepática.',
+      descripcion: 'Dosificar al ganado contra saguaypé / distomatosis hepática. Tratamiento recomendado: Triclabendazol (mata estadios más inmaduros). También: Rafoxanida, Closantel, Nitroxinil y Clorsulón.',
       categoria: 'endo'
     });
     eventos.push({
       fecha: proximoMes(8), // Septiembre
       titulo: 'Dosificación contra Saguaypé (Fasciola hepatica)',
-      descripcion: 'Segunda dosificación anual contra saguaypé.',
+      descripcion: 'Segunda dosificación anual contra saguaypé. Tratamiento recomendado: Triclabendazol (mata estadios más inmaduros). También: Rafoxanida, Closantel, Nitroxinil y Clorsulón.',
       categoria: 'endo'
     });
   }
@@ -455,13 +455,13 @@ function calcularPlan(p) {
     eventos.push({
       fecha: proximoMes(2), // Marzo
       titulo: 'Tratamiento contra Paramphistomum',
-      descripcion: 'Trematode ruminal. Tratar animales afectados, especialmente en zonas con bañados y aguadas.',
+      descripcion: 'Trematode ruminal. Tratar animales afectados. Ante la duda realice análisis coprológico. Tratamiento recomendado: Oxiclozanide 20%.',
       categoria: 'endo'
     });
     eventos.push({
       fecha: proximoMes(8), // Septiembre
       titulo: 'Tratamiento contra Paramphistomum',
-      descripcion: 'Segunda aplicación anual. Controlar especialmente animales jóvenes.',
+      descripcion: 'Trematode ruminal. Tratar animales afectados. Ante la duda realice análisis coprológico. Tratamiento recomendado: Oxiclozanide 20%.',
       categoria: 'endo'
     });
   }
@@ -472,8 +472,8 @@ function calcularPlan(p) {
     [7, 8, 9].forEach(m => {
       eventos.push({
         fecha: proximoMes(m),
-        titulo: 'Control garrapatas — 1ª generación (familia 1)',
-        descripcion: 'Tratar contra primera generación de garrapatas con una familia 1 de garrapaticidas. Consulte a su veterinario para seleccionar el producto adecuado y respetar los tiempos de carencia.',
+        titulo: 'Control garrapatas — 1ª generación',
+        descripcion: 'Tratar contra primera generación de garrapatas con una familia de garrapaticidas diferente a la usada en generación 2 y 3. Consulte a su veterinario para seleccionar el producto adecuado y respetar los tiempos de carencia.',
         categoria: 'ecto'
       });
     });
@@ -481,8 +481,8 @@ function calcularPlan(p) {
     [10, 11, 0].forEach(m => {
       eventos.push({
         fecha: proximoMes(m),
-        titulo: 'Control garrapatas — 2ª generación (familia 2)',
-        descripcion: 'Tratar contra segunda generación de garrapatas con una familia 2 de garrapaticidas. Rotar familia de garrapaticidas para evitar resistencia. Consulte a su veterinario.',
+        titulo: 'Control garrapatas — 2ª generación',
+        descripcion: 'Tratar contra segunda generación de garrapatas con una familia de garrapaticidas diferente a las usadas para generación 1 y 3. Consulte a su veterinario.',
         categoria: 'ecto'
       });
     });
@@ -490,8 +490,8 @@ function calcularPlan(p) {
     [1, 2, 3, 4].forEach(m => {
       eventos.push({
         fecha: proximoMes(m),
-        titulo: 'Control garrapatas — 3ª generación (familia 3)',
-        descripcion: 'Tratar contra tercera generación de garrapatas con una familia 3 de garrapaticidas. Rotar familia de garrapaticidas para evitar resistencia. Consulte a su veterinario.',
+        titulo: 'Control garrapatas — 3ª generación',
+        descripcion: 'Tratar contra tercera generación de garrapatas con una familia de garrapaticida que no usó para generación 1 y 2. Consulte a su veterinario.',
         categoria: 'ecto'
       });
     });
