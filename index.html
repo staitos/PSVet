@@ -678,7 +678,7 @@
         </div>
       </div>
 
-      <div class="risk-item" id="r-mosca" style="margin-bottom:0;">
+      <div class="risk-item" id="r-mosca">
         <div>
           <div class="risk-label">Mosca de cuernos (Haematobia irritans)</div>
           <div class="risk-hint">Presencia en el rodeo durante el verano</div>
@@ -686,6 +686,28 @@
         <div class="risk-yn">
           <button type="button" class="yn-btn" onclick="setRisk('mosca','si',this)">Sí</button>
           <button type="button" class="yn-btn" onclick="setRisk('mosca','no',this)">No</button>
+        </div>
+      </div>
+
+      <div class="risk-item" id="r-haemolyticum">
+        <div>
+          <div class="risk-label">Clostridium haemolyticum (altamente patógeno)</div>
+          <div class="risk-hint">Hemoglobinuria bacilar, zonas de bañados y aguadas</div>
+        </div>
+        <div class="risk-yn">
+          <button type="button" class="yn-btn" onclick="setRisk('haemolyticum','si',this)">Sí</button>
+          <button type="button" class="yn-btn" onclick="setRisk('haemolyticum','no',this)">No</button>
+        </div>
+      </div>
+
+      <div class="risk-item" id="r-castracion" style="margin-bottom:0;">
+        <div>
+          <div class="risk-label">Castración de terneros con goma</div>
+          <div class="risk-hint">Requiere vacunación con cobertura para Tétanos</div>
+        </div>
+        <div class="risk-yn">
+          <button type="button" class="yn-btn" onclick="setRisk('castracion','si',this)">Sí</button>
+          <button type="button" class="yn-btn" onclick="setRisk('castracion','no',this)">No</button>
         </div>
       </div>
     </div>
@@ -731,7 +753,8 @@
 
   const risks = {
     brucelosis: null, neospora: null, garrapatas: null, tristeza: null,
-    carbunco: null, paramphistomum: null, saguaype: null, mosca: null
+    carbunco: null, paramphistomum: null, saguaype: null, mosca: null,
+    haemolyticum: null, castracion: null
   };
 
   function setRisk(name, val, btn) {
@@ -753,7 +776,7 @@
 
   function updateProgress() {
     let filled = 0;
-    const total = requiredFields.length + 8; // + 8 riesgos
+    const total = requiredFields.length + 10; // + 10 riesgos
     requiredFields.forEach(id => {
       if (document.getElementById(id)?.value.trim()) filled++;
     });
@@ -822,7 +845,9 @@
       carbunco: risks.carbunco || '',
       paramphistomum: risks.paramphistomum || '',
       saguaype: risks.saguaype || '',
-      mosca: risks.mosca || ''
+      mosca: risks.mosca || '',
+      haemolyticum: risks.haemolyticum || '',
+      castracion: risks.castracion || ''
     };
   }
 
