@@ -423,9 +423,9 @@ function calcularPlan(p) {
       descripcion: 'Es buen momento para que las hembras con problemas de ubre, abortos, mala dentición, prolapsos de útero, etc., sean clasificadas como descarte para los próximos servicios reproductivos.',
       categoria: 'manejo'
     });
-    // Monitoreo de entore — durante el servicio
+    // Monitoreo de entore — primeros días de enero
     eventos.push({
-      fecha: inicioServicios,
+      fecha: proximoMes(0), // Enero
       titulo: 'Monitoreo de entore',
       descripcion: 'Es buen momento de evaluar los servicios y no tener sorpresas negativas cuando se hace la ecografía de diagnóstico de gestación. Se clasifica mediante diagnóstico de actividad ovárica: hembras ciclando, en anestro superficial y profundo, para tomar oportunamente medidas de manejo o no.',
       categoria: 'veterinario'
