@@ -358,12 +358,18 @@ function calcularPlan(p) {
       categoria: 'vacunacion'
     });
 
-    // Brucelosis
+    // Brucelosis — revacunación 6 meses después
     if (p.brucelosis === 'si') {
       eventos.push({
         fecha: vac1,
         titulo: 'Vacunación contra Brucelosis (terneras)',
         descripcion: 'Vacunar terneras entre 3 y 8 meses de edad contra Brucelosis (Brucella abortus). Recuerde al veterinario actuante que suba el certificado de vacunación al SINAVELE.',
+        categoria: 'vacunacion'
+      });
+      eventos.push({
+        fecha: addDays(vac1, 180),
+        titulo: 'Revacunación contra Brucelosis (terneras)',
+        descripcion: 'Revacunación de terneras contra Brucelosis, 6 meses posteriores a la primera vacunación. Recuerde al veterinario actuante que suba el certificado al SINAVELE.',
         categoria: 'vacunacion'
       });
     }
@@ -403,12 +409,26 @@ function calcularPlan(p) {
       descripcion: 'Primera dosis de vacuna reproductiva para vaquillonas que ingresan al servicio. Se requieren 2 dosis para lograr inmunidad adecuada y evitar pérdidas embrionarias y abortos.',
       categoria: 'vacunacion'
     });
-    // Vacuna reproductiva vaquillonas 2ª dosis + vacas: 30 días antes
+    // Vacuna reproductiva vaquillonas 2ª dosis + vacas + descarte hembras: 30 días antes
     eventos.push({
       fecha: addDays(inicioServicios, -30),
       titulo: 'Vacuna reproductiva vaquillonas — 2ª dosis + Revacunación vacas',
       descripcion: 'Segunda dosis de vacuna reproductiva para vaquillonas. Las vacas vacunadas el año anterior reciben una única dosis de revacunación anual 30 días antes del servicio. Categorías menores de 2 años deben estar desparasitadas.',
       categoria: 'vacunacion'
+    });
+    // Descarte de hembras — mismo momento que revacunación reproductiva
+    eventos.push({
+      fecha: addDays(inicioServicios, -30),
+      titulo: 'Descarte de hembras',
+      descripcion: 'Es buen momento para que las hembras con problemas de ubre, abortos, mala dentición, prolapsos de útero, etc., sean clasificadas como descarte para los próximos servicios reproductivos.',
+      categoria: 'manejo'
+    });
+    // Monitoreo de entore — durante el servicio
+    eventos.push({
+      fecha: inicioServicios,
+      titulo: 'Monitoreo de entore',
+      descripcion: 'Es buen momento de evaluar los servicios y no tener sorpresas negativas cuando se hace la ecografía de diagnóstico de gestación. Se clasifica mediante diagnóstico de actividad ovárica: hembras ciclando, en anestro superficial y profundo, para tomar oportunamente medidas de manejo o no.',
+      categoria: 'veterinario'
     });
   }
 
@@ -512,6 +532,30 @@ function calcularPlan(p) {
       titulo: 'Revacunación contra Tristeza bovina (terneros/as)',
       descripcion: 'Revacunación contra Tristeza de terneros/as, 60 días después de la primera dosis para completar la inmunización.',
       categoria: 'vacunacion'
+    });
+  }
+
+  // -------- ABORTO Y PÉRDIDAS EMBRIONARIAS --------
+  if (p.neospora === 'si') {
+    [1, 2, 3, 4, 5, 6, 7, 8].forEach(m => { // Feb a Sep
+      eventos.push({
+        fecha: proximoMes(m),
+        titulo: 'Monitoreo de abortos',
+        descripcion: 'Si detectó abortos es buen momento de llamar a su veterinario de confianza para llegar a un diagnóstico de aborto y prevenir grandes problemas a futuro.',
+        categoria: 'veterinario'
+      });
+    });
+  }
+
+  // -------- DIAGNÓSTICO COPROLÓGICO (No sé en Paramphistomum o Saguaypé) --------
+  if (p.paramphistomum === 'nose' || p.saguaype === 'nose') {
+    [4, 8].forEach(m => { // Mayo, Septiembre
+      eventos.push({
+        fecha: proximoMes(m),
+        titulo: 'Diagnóstico coprológico — Paramphistomum / Saguaypé',
+        descripcion: 'Realizar análisis coprológico para determinar presencia de Paramphistomum y/o Saguaypé (Fasciola hepatica) en el rodeo. Consulte a su veterinario.',
+        categoria: 'veterinario'
+      });
     });
   }
 
