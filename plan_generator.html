@@ -163,7 +163,7 @@ body {
 /* NO EVENTOS */
 .no-eventos { font-size: 13px; color: #bbb; font-style: italic; padding: 0.5rem 0; }
 
-.mes-pasado { opacity: 0.65; }
+.mes-pasado { opacity: 0.8; border-left: 3px solid #d8d4cc; }
 
 /* LOADING */
 .loading {
@@ -198,17 +198,27 @@ body {
       </div>
       <div>
         <div style="font-family:'Lora',serif;font-size:15px;font-weight:500;">Fechas Fiebre Aftosa</div>
-        <div style="font-size:12px;color:#5a5a5a;">Ingresá las fechas de campaña del año (MGAP/SENASA)</div>
+        <div style="font-size:12px;color:#5a5a5a;">Ingresá las fechas de cada período de vacunación (MGAP)</div>
       </div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div style="grid-column:1/-1;font-size:12px;font-weight:600;color:#1a5fa8;">1º Período</div>
       <div>
-        <label style="display:block;font-size:12px;color:#5a5a5a;margin-bottom:4px;font-weight:500;">1ª campaña</label>
-        <input type="date" id="aftosaInput1" style="width:100%;height:40px;border:1px solid #d8d4cc;border-radius:10px;padding:0 12px;font-size:13px;" onchange="actualizarAftosa()" />
+        <label style="display:block;font-size:11px;color:#5a5a5a;margin-bottom:3px;">Fecha de inicio</label>
+        <input type="date" id="aftosa1inicio" style="width:100%;height:36px;border:1px solid #d8d4cc;border-radius:8px;padding:0 10px;font-size:12px;" onchange="actualizarAftosa()" />
       </div>
       <div>
-        <label style="display:block;font-size:12px;color:#5a5a5a;margin-bottom:4px;font-weight:500;">2ª campaña</label>
-        <input type="date" id="aftosaInput2" style="width:100%;height:40px;border:1px solid #d8d4cc;border-radius:10px;padding:0 12px;font-size:13px;" onchange="actualizarAftosa()" />
+        <label style="display:block;font-size:11px;color:#5a5a5a;margin-bottom:3px;">Fecha de fin</label>
+        <input type="date" id="aftosa1fin" style="width:100%;height:36px;border:1px solid #d8d4cc;border-radius:8px;padding:0 10px;font-size:12px;" onchange="actualizarAftosa()" />
+      </div>
+      <div style="grid-column:1/-1;font-size:12px;font-weight:600;color:#1a5fa8;margin-top:6px;">2º Período</div>
+      <div>
+        <label style="display:block;font-size:11px;color:#5a5a5a;margin-bottom:3px;">Fecha de inicio</label>
+        <input type="date" id="aftosa2inicio" style="width:100%;height:36px;border:1px solid #d8d4cc;border-radius:8px;padding:0 10px;font-size:12px;" onchange="actualizarAftosa()" />
+      </div>
+      <div>
+        <label style="display:block;font-size:11px;color:#5a5a5a;margin-bottom:3px;">Fecha de fin</label>
+        <input type="date" id="aftosa2fin" style="width:100%;height:36px;border:1px solid #d8d4cc;border-radius:8px;padding:0 10px;font-size:12px;" onchange="actualizarAftosa()" />
       </div>
     </div>
   </div>
@@ -265,8 +275,12 @@ function getParams() {
     paramphistomum:   p.get('paramphistomum') || 'no',
     saguaype:         p.get('saguaype') || 'no',
     mosca:            p.get('mosca') || 'no',
-    aftosa1:          p.get('aftosa1') || '',
-    aftosa2:          p.get('aftosa2') || ''
+    haemolyticum:     p.get('haemolyticum') || 'no',
+    castracion:       p.get('castracion') || 'no',
+    aftosa1inicio:    p.get('aftosa1inicio') || '',
+    aftosa1fin:       p.get('aftosa1fin') || '',
+    aftosa2inicio:    p.get('aftosa2inicio') || '',
+    aftosa2fin:       p.get('aftosa2fin') || ''
   };
 }
 
@@ -318,10 +332,41 @@ function calcularPlan(p) {
   if (finPartos) {
     const vac1 = addDays(finPartos, 90);
     const vac2 = addDays(finPartos, 120);
-    let descClost = 'Vacunar terneros/as contra enfermedades clostridiales. Revacunar a los 20-30 días para buena inmunidad previo al destete/castración. Animales vacunados el año pasado solo necesitan una dosis.';
-    if (p.brucelosis === 'si') descClost += ' También es buen momento de vacunar a las terneras contra brucelosis.';
-    eventos.push({ fecha: vac1, titulo: 'Vacunación clostridial — 1ª dosis (terneros/as)', descripcion: descClost, categoria: 'vacunacion' });
-    eventos.push({ fecha: vac2, titulo: 'Revacunación clostridial (terneros/as)', descripcion: 'Revacunación de terneros/as contra clostridios. Es fundamental que categorías menores de 2 años estén desparasitadas.', categoria: 'vacunacion' });
+
+    const tetanos = p.castracion === 'si' ? ' Como el establecimiento realiza castración con goma, la vacuna debe incluir cobertura para Tétanos.' : '';
+    const brucDesc = p.brucelosis === 'si' ? ' También es buen momento de vacunar a las terneras contra Brucelosis.' : '';
+
+    eventos.push({
+      fecha: vac1,
+      titulo: 'Vacunación clostridial — 1ª dosis (terneros/as)',
+      descripcion: 'Vacunar terneros/as contra enfermedades clostridiales. Revacunar a los 20-30 días para buena inmunidad previo al destete/castración. Animales vacunados el año pasado solo necesitan una dosis.' + tetanos + brucDesc,
+      categoria: 'vacunacion'
+    });
+
+    // Revacunación anual de todas las categorías — puede hacerse junto con 1ª dosis terneros
+    eventos.push({
+      fecha: vac1,
+      titulo: 'Revacunación anual clostridial — todas las categorías',
+      descripcion: 'Revacunación anual con clostridiales para todas las categorías de animales del rodeo. Puede realizarse en este momento o junto con la revacunación de terneros/as.',
+      categoria: 'vacunacion'
+    });
+
+    eventos.push({
+      fecha: vac2,
+      titulo: 'Revacunación clostridial (terneros/as)',
+      descripcion: 'Revacunación de terneros/as contra clostridios. Es fundamental que categorías menores de 2 años estén desparasitadas.' + tetanos,
+      categoria: 'vacunacion'
+    });
+
+    // Brucelosis
+    if (p.brucelosis === 'si') {
+      eventos.push({
+        fecha: vac1,
+        titulo: 'Vacunación contra Brucelosis (terneras)',
+        descripcion: 'Vacunar terneras entre 3 y 8 meses de edad contra Brucelosis (Brucella abortus). Obligatoria en zonas de riesgo. Notificar al veterinario oficial.',
+        categoria: 'vacunacion'
+      });
+    }
 
     // -------- 1b. VACUNA RESPIRATORIA --------
     eventos.push({ fecha: vac1, titulo: 'Vacunación respiratoria — 1ª dosis (terneros/as)', descripcion: 'Vacunar terneros/as contra enfermedades respiratorias (IBR, DVB, PI3, BRSV). Primera dosis. Revacunar a los 20-30 días.', categoria: 'vacunacion' });
@@ -470,7 +515,19 @@ function calcularPlan(p) {
     });
   }
 
-  // -------- 10. PARÁSITOS GASTROINTESTINALES (<2 años) --------
+  // -------- 10. CLOSTRIDIUM HAEMOLYTICUM --------
+  if (p.haemolyticum === 'si') {
+    [1, 5, 9].forEach(m => { // Febrero, Junio, Octubre
+      eventos.push({
+        fecha: proximoMes(m),
+        titulo: 'Vacunación contra Clostridium haemolyticum — todas las categorías',
+        descripcion: 'Vacunación contra Clostridium haemolyticum (hemoglobinuria bacilar) para todas las categorías de animales. Patógeno de alta mortalidad. Tres aplicaciones anuales: febrero, junio y octubre.',
+        categoria: 'vacunacion'
+      });
+    });
+  }
+
+  // -------- 11. PARÁSITOS GASTROINTESTINALES (<2 años) --------
   const mesesParasitos = [0, 2, 4, 6, 8, 10]; // Ene, Mar, May, Jul, Sep, Nov
   mesesParasitos.forEach(m => {
     eventos.push({
@@ -481,38 +538,24 @@ function calcularPlan(p) {
     });
   });
 
-  // -------- 11. FIEBRE AFTOSA --------
-  if (p.aftosa1) {
-    eventos.push({
-      fecha: parseDate(p.aftosa1),
-      titulo: 'Vacunación Fiebre Aftosa — 1ª campaña',
-      descripcion: 'Vacunación obligatoria contra Fiebre Aftosa según calendario MGAP/SENASA. Todos los bovinos.',
-      categoria: 'vacunacion'
-    });
-  } else {
-    eventos.push({
-      fecha: null,
-      titulo: 'Fiebre Aftosa — 1ª campaña (fecha pendiente)',
-      descripcion: 'Fecha determinada por MGAP/SENASA. Consultar calendario oficial de vacunación.',
-      categoria: 'vacunacion',
-      sinFecha: true
-    });
+  // -------- 12. FIEBRE AFTOSA --------
+  if (p.aftosa1inicio) {
+    eventos.push({ fecha: parseDate(p.aftosa1inicio), titulo: 'Fiebre Aftosa — 1º período, inicio vacunación', descripcion: 'Inicio del 1º período de vacunación obligatoria contra Fiebre Aftosa (MGAP). Todos los bovinos.', categoria: 'vacunacion' });
   }
-  if (p.aftosa2) {
-    eventos.push({
-      fecha: parseDate(p.aftosa2),
-      titulo: 'Vacunación Fiebre Aftosa — 2ª campaña',
-      descripcion: 'Segunda campaña obligatoria contra Fiebre Aftosa según calendario MGAP/SENASA. Todos los bovinos.',
-      categoria: 'vacunacion'
-    });
-  } else {
-    eventos.push({
-      fecha: null,
-      titulo: 'Fiebre Aftosa — 2ª campaña (fecha pendiente)',
-      descripcion: 'Fecha determinada por MGAP/SENASA. Consultar calendario oficial de vacunación.',
-      categoria: 'vacunacion',
-      sinFecha: true
-    });
+  if (p.aftosa1fin) {
+    eventos.push({ fecha: parseDate(p.aftosa1fin), titulo: 'Fiebre Aftosa — 1º período, fin vacunación', descripcion: 'Fin del 1º período de vacunación contra Fiebre Aftosa. Verificar que todos los animales hayan sido vacunados.', categoria: 'vacunacion' });
+  }
+  if (!p.aftosa1inicio && !p.aftosa1fin) {
+    eventos.push({ fecha: null, titulo: 'Fiebre Aftosa — 1º período (fechas pendientes)', descripcion: 'Ingresar las fechas del 1º período de vacunación en el panel superior.', categoria: 'vacunacion', sinFecha: true });
+  }
+  if (p.aftosa2inicio) {
+    eventos.push({ fecha: parseDate(p.aftosa2inicio), titulo: 'Fiebre Aftosa — 2º período, inicio vacunación', descripcion: 'Inicio del 2º período de vacunación obligatoria contra Fiebre Aftosa (MGAP). Todos los bovinos.', categoria: 'vacunacion' });
+  }
+  if (p.aftosa2fin) {
+    eventos.push({ fecha: parseDate(p.aftosa2fin), titulo: 'Fiebre Aftosa — 2º período, fin vacunación', descripcion: 'Fin del 2º período de vacunación contra Fiebre Aftosa. Verificar que todos los animales hayan sido vacunados.', categoria: 'vacunacion' });
+  }
+  if (!p.aftosa2inicio && !p.aftosa2fin) {
+    eventos.push({ fecha: null, titulo: 'Fiebre Aftosa — 2º período (fechas pendientes)', descripcion: 'Ingresar las fechas del 2º período de vacunación en el panel superior.', categoria: 'vacunacion', sinFecha: true });
   }
 
   return eventos.filter(e => e.fecha || e.sinFecha);
@@ -616,7 +659,7 @@ function render(p, eventos, porMes) {
           ${m.eventos.length === 0
             ? '<div class="no-eventos">Sin actividades programadas este mes.</div>'
             : m.eventos.map(ev => `
-              <div class="evento-row" style="${esPasado ? 'opacity:0.5;' : ''}">
+              <div class="evento-row" style="${esPasado ? 'opacity:0.75;' : ''}">
                 <div class="evento-cat-dot" style="background:${esPasado ? '#bbb' : COLORES[ev.categoria].hex}"></div>
                 <div class="evento-det">
                   <strong>${ev.titulo}</strong>
@@ -911,8 +954,10 @@ function hexToRgb(hex) {
 // ======================================================
 function actualizarAftosa() {
   const p = getParams();
-  p.aftosa1 = document.getElementById('aftosaInput1').value;
-  p.aftosa2 = document.getElementById('aftosaInput2').value;
+  p.aftosa1inicio = document.getElementById('aftosa1inicio').value;
+  p.aftosa1fin    = document.getElementById('aftosa1fin').value;
+  p.aftosa2inicio = document.getElementById('aftosa2inicio').value;
+  p.aftosa2fin    = document.getElementById('aftosa2fin').value;
   const eventos = calcularPlan(p);
   const porMes = agruparPorMes(eventos);
   render(p, eventos, porMes);
@@ -923,9 +968,6 @@ function actualizarAftosa() {
 // ======================================================
 window.addEventListener('load', () => {
   const p = getParams();
-  // Pre-cargar fechas aftosa si vienen en URL
-  if (p.aftosa1) document.getElementById('aftosaInput1').value = p.aftosa1;
-  if (p.aftosa2) document.getElementById('aftosaInput2').value = p.aftosa2;
   const eventos = calcularPlan(p);
   const porMes = agruparPorMes(eventos);
   render(p, eventos, porMes);
