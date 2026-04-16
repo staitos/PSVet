@@ -148,9 +148,9 @@ body {
 .evento-det strong { font-size: 13.5px; font-weight: 500; display: block; color: var(--texto); }
 .evento-det span { font-size: 12px; color: var(--gris); line-height: 1.5; display: block; margin-top: 2px; }
 .evento-det .fecha-tag {
-  display: inline-block; background: var(--gris-claro);
-  border-radius: 4px; padding: 1px 7px; font-size: 11px;
-  color: var(--gris); margin-top: 4px;
+  display: block; background: var(--gris-claro);
+  border-radius: 4px; padding: 3px 7px; font-size: 11px;
+  color: var(--gris); margin-top: 6px; width: fit-content;
 }
 
 /* CATEGORIAS */
@@ -358,25 +358,25 @@ function calcularPlan(p) {
       categoria: 'vacunacion'
     });
 
-    // Brucelosis — revacunación 6 meses después
+    // Brucelosis — junio, revacunación 3 meses después (septiembre)
     if (p.brucelosis === 'si') {
       eventos.push({
-        fecha: vac1,
+        fecha: proximoMes(5), // Junio
         titulo: 'Vacunación contra Brucelosis (terneras)',
         descripcion: 'Vacunar terneras entre 3 y 8 meses de edad contra Brucelosis (Brucella abortus). Recuerde al veterinario actuante que suba el certificado de vacunación al SINAVELE.',
         categoria: 'vacunacion'
       });
       eventos.push({
-        fecha: addDays(vac1, 180),
+        fecha: proximoMes(8), // Septiembre — 3 meses después
         titulo: 'Revacunación contra Brucelosis (terneras)',
-        descripcion: 'Revacunación de terneras contra Brucelosis, 6 meses posteriores a la primera vacunación. Recuerde al veterinario actuante que suba el certificado al SINAVELE.',
+        descripcion: 'Revacunación de terneras contra Brucelosis, 3 meses posteriores a la primera vacunación. Recuerde al veterinario actuante que suba el certificado al SINAVELE.',
         categoria: 'vacunacion'
       });
     }
 
-    // -------- 1b. VACUNA RESPIRATORIA --------
-    eventos.push({ fecha: vac1, titulo: 'Vacunación respiratoria — 1ª dosis (terneros/as)', descripcion: 'Vacunar terneros/as contra enfermedades respiratorias (IBR, DVB, PI3, BRSV). Primera dosis. Revacunar a los 20-30 días.', categoria: 'vacunacion' });
-    eventos.push({ fecha: vac2, titulo: 'Revacunación respiratoria (terneros/as)', descripcion: 'Segunda dosis de vacuna respiratoria para completar inmunización previo al destete.', categoria: 'vacunacion' });
+    // -------- 1b. VACUNA RESPIRATORIA — marzo y abril --------
+    eventos.push({ fecha: proximoMes(2), titulo: 'Vacunación respiratoria — 1ª dosis (terneros/as)', descripcion: 'Vacunar terneros/as contra enfermedades respiratorias (IBR, DVB, PI3, BRSV). Primera dosis en marzo.', categoria: 'vacunacion' });
+    eventos.push({ fecha: proximoMes(3), titulo: 'Revacunación respiratoria (terneros/as)', descripcion: 'Segunda dosis de vacuna respiratoria en abril para completar inmunización previo al destete.', categoria: 'vacunacion' });
 
     // -------- 1c. VACUNA QUERATOCONJUNTIVITIS --------
     eventos.push({ fecha: vac1, titulo: 'Vacunación contra Queratoconjuntivitis (terneros/as)', descripcion: 'Vacunar terneros/as contra queratoconjuntivitis infecciosa bovina. Puede vacunar junto a otras vacunas si lo realiza en el mismo día, preferentemente del otro lado de la tabla del cuello.', categoria: 'vacunacion' });
@@ -457,13 +457,13 @@ function calcularPlan(p) {
   // -------- 6. SAGUAYPÉ --------
   if (p.saguaype === 'si') {
     eventos.push({
-      fecha: proximoMes(3), // Abril
+      fecha: proximoMes(4), // Mayo
       titulo: 'Dosificación contra Saguaypé (Fasciola hepatica)',
       descripcion: 'Dosificar al ganado contra saguaypé / distomatosis hepática. Tratamiento recomendado: Triclabendazol (mata estadios más inmaduros). También: Rafoxanida, Closantel, Nitroxinil y Clorsulón.',
       categoria: 'endo'
     });
     eventos.push({
-      fecha: proximoMes(8), // Septiembre
+      fecha: proximoMes(10), // Noviembre
       titulo: 'Dosificación contra Saguaypé (Fasciola hepatica)',
       descripcion: 'Segunda dosificación anual contra saguaypé. Tratamiento recomendado: Triclabendazol (mata estadios más inmaduros). También: Rafoxanida, Closantel, Nitroxinil y Clorsulón.',
       categoria: 'endo'
@@ -473,13 +473,13 @@ function calcularPlan(p) {
   // -------- 7. PARAMPHISTOMUM --------
   if (p.paramphistomum === 'si') {
     eventos.push({
-      fecha: proximoMes(2), // Marzo
+      fecha: proximoMes(4), // Mayo
       titulo: 'Tratamiento contra Paramphistomum',
       descripcion: 'Trematode ruminal. Tratar animales afectados. Ante la duda realice análisis coprológico. Tratamiento recomendado: Oxiclozanide 20%.',
       categoria: 'endo'
     });
     eventos.push({
-      fecha: proximoMes(8), // Septiembre
+      fecha: proximoMes(10), // Noviembre
       titulo: 'Tratamiento contra Paramphistomum',
       descripcion: 'Trematode ruminal. Tratar animales afectados. Ante la duda realice análisis coprológico. Tratamiento recomendado: Oxiclozanide 20%.',
       categoria: 'endo'
