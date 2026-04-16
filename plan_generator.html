@@ -147,10 +147,16 @@ body {
 .evento-det { flex: 1; }
 .evento-det strong { font-size: 13.5px; font-weight: 500; display: block; color: var(--texto); }
 .evento-det span { font-size: 12px; color: var(--gris); line-height: 1.5; display: block; margin-top: 2px; }
-.evento-det .fecha-tag {
-  display: block; background: var(--gris-claro);
-  border-radius: 4px; padding: 3px 7px; font-size: 11px;
-  color: var(--gris); margin-top: 6px; width: fit-content;
+.evento-det .fecha-tag, .evento-det div.fecha-tag {
+  display: block;
+  background: var(--gris-claro);
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 11px;
+  color: var(--gris);
+  margin-top: 6px;
+  width: fit-content;
+  clear: both;
 }
 
 /* CATEGORIAS */
@@ -374,12 +380,10 @@ function calcularPlan(p) {
       });
     }
 
-    // -------- 1b. VACUNA RESPIRATORIA — marzo y abril --------
-    eventos.push({ fecha: proximoMes(2), titulo: 'Vacunación respiratoria — 1ª dosis (terneros/as)', descripcion: 'Vacunar terneros/as contra enfermedades respiratorias (IBR, DVB, PI3, BRSV). Primera dosis en marzo.', categoria: 'vacunacion' });
-    eventos.push({ fecha: proximoMes(3), titulo: 'Revacunación respiratoria (terneros/as)', descripcion: 'Segunda dosis de vacuna respiratoria en abril para completar inmunización previo al destete.', categoria: 'vacunacion' });
+    // -------- 1b. VACUNA RESPIRATORIA Y OCULAR — marzo y abril --------
+    eventos.push({ fecha: proximoMes(2), titulo: 'Vacunación contra enfermedades respiratorias y oculares — 1ª dosis (terneros/as)', descripcion: 'Vacunar terneros/as contra enfermedades respiratorias (IBR, DVB, PI3, BRSV) y queratoconjuntivitis infecciosa bovina. Primera dosis en marzo. Puede vacunar junto a otras vacunas si lo realiza en el mismo día, preferentemente del otro lado de la tabla del cuello.', categoria: 'vacunacion' });
+    eventos.push({ fecha: proximoMes(3), titulo: 'Revacunación contra enfermedades respiratorias y oculares — 2ª dosis (terneros/as)', descripcion: 'Segunda dosis en abril contra enfermedades respiratorias y oculares para completar inmunización previo al destete.', categoria: 'vacunacion' });
 
-    // -------- 1c. VACUNA QUERATOCONJUNTIVITIS --------
-    eventos.push({ fecha: vac1, titulo: 'Vacunación contra Queratoconjuntivitis (terneros/as)', descripcion: 'Vacunar terneros/as contra queratoconjuntivitis infecciosa bovina. Puede vacunar junto a otras vacunas si lo realiza en el mismo día, preferentemente del otro lado de la tabla del cuello.', categoria: 'vacunacion' });
   }
 
   // -------- 2. LEPTOSPIROSIS Y ECOGRAFÍA --------
@@ -708,7 +712,7 @@ function render(p, eventos, porMes) {
                 <div class="evento-det">
                   <strong>${ev.titulo}</strong>
                   <span>${ev.descripcion}</span>
-                  ${ev.fecha ? `<span class="fecha-tag">${formatDate(ev.fecha)}</span>` : '<span class="fecha-tag">Fecha según autoridad sanitaria</span>'}
+                  <div class="fecha-tag">${ev.fecha ? formatDate(ev.fecha) : 'Fecha según MGAP'}</div>
                 </div>
               </div>
             `).join('')
