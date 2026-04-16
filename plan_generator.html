@@ -91,6 +91,19 @@ body {
 }
 .leyenda-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 
+.plan-disclaimer {
+  font-size: 11px;
+  color: var(--gris);
+  font-style: italic;
+  line-height: 1.6;
+  padding: 12px 16px;
+  border-top: 0.5px solid var(--borde);
+  border-bottom: 0.5px solid var(--borde);
+  margin-bottom: 1.5rem;
+  background: var(--gris-claro);
+  border-radius: 8px;
+}
+
 /* VISTA ANUAL */
 .anual-grid {
   display: grid;
@@ -144,9 +157,9 @@ body {
   width: 12px; height: 12px; border-radius: 50%;
   flex-shrink: 0; margin-top: 3px;
 }
-.evento-det { flex: 1; min-width: 0; }
-.evento-det strong { font-size: 13.5px; font-weight: 500; display: block; color: var(--texto); margin-bottom: 4px; }
-.evento-det span { font-size: 12px; color: var(--gris); line-height: 1.5; display: block; }
+.evento-det { flex: 1; }
+.evento-det strong { font-size: 13.5px; font-weight: 500; display: block; color: var(--texto); }
+.evento-det span { font-size: 12px; color: var(--gris); line-height: 1.5; display: block; margin-top: 2px; }
 .evento-det .fecha-tag, .evento-det div.fecha-tag {
   display: block;
   background: var(--gris-claro);
@@ -154,8 +167,9 @@ body {
   padding: 3px 8px;
   font-size: 11px;
   color: var(--gris);
-  margin-top: 8px;
+  margin-top: 6px;
   width: fit-content;
+  clear: both;
 }
 
 /* CATEGORIAS */
@@ -363,7 +377,7 @@ function calcularPlan(p) {
       categoria: 'vacunacion'
     });
 
-    // Brucelosis — junio, revacunación 4 meses después (octubre)
+    // Brucelosis — junio, revacunación 3 meses después (septiembre)
     if (p.brucelosis === 'si') {
       eventos.push({
         fecha: proximoMes(5), // Junio
@@ -372,9 +386,9 @@ function calcularPlan(p) {
         categoria: 'vacunacion'
       });
       eventos.push({
-        fecha: proximoMes(9), // Octubre — 4 meses después
+        fecha: proximoMes(8), // Septiembre — 3 meses después
         titulo: 'Revacunación contra Brucelosis (terneras)',
-        descripcion: 'Revacunación de terneras contra Brucelosis, 4 meses posteriores a la primera vacunación de junio. Recuerde al veterinario actuante que suba el certificado al SINAVELE.',
+        descripcion: 'Revacunación de terneras contra Brucelosis, 3 meses posteriores a la primera vacunación. Recuerde al veterinario actuante que suba el certificado al SINAVELE.',
         categoria: 'vacunacion'
       });
     }
@@ -668,6 +682,10 @@ function render(p, eventos, porMes) {
           <span>${v.nombre}</span>
         </div>
       `).join('')}
+    </div>
+
+    <div class="plan-disclaimer">
+      Este plan sanitario no pretende sustituir el asesoramiento profesional de un veterinario. Tiene la función de ser un recordatorio de eventos importantes en la producción de carne bovina. Es importante que consulte a su profesional de confianza a fin de evitar efectos adversos de medicamentos o por la interacción de éstos cuando se suministran juntos, así como los lugares de aplicación.
     </div>
 
     <div id="vistaAnual" class="anual-grid">
