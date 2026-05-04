@@ -380,15 +380,9 @@ function calcularPlan(p) {
       });
     }
 
-    // -------- 1b. VACUNA RESPIRATORIA Y OCULAR — marzo y abril, siempre juntas --------
-    const fechaResp1 = proximoMes(2); // Marzo
-    const fechaResp2 = proximoMes(3); // Abril
-    // Si abril ya pasó, usar marzo y abril del año siguiente
-    const hoyResp = new Date();
-    const resp1 = (fechaResp2 < hoyResp) ? new Date(hoyResp.getFullYear() + 1, 2, 1) : fechaResp1;
-    const resp2 = (fechaResp2 < hoyResp) ? new Date(hoyResp.getFullYear() + 1, 3, 1) : fechaResp2;
-    eventos.push({ fecha: resp1, titulo: 'Vacunación contra enfermedades respiratorias y oculares — 1ª dosis (terneros/as)', descripcion: 'Vacunar terneros/as contra enfermedades respiratorias (IBR, DVB, PI3, BRSV) y queratoconjuntivitis infecciosa bovina. Primera dosis en marzo. Puede vacunar junto a otras vacunas si lo realiza en el mismo día, preferentemente del otro lado de la tabla del cuello.', categoria: 'vacunacion' });
-    eventos.push({ fecha: resp2, titulo: 'Revacunación contra enfermedades respiratorias y oculares — 2ª dosis (terneros/as)', descripcion: 'Segunda dosis en abril contra enfermedades respiratorias y oculares para completar inmunización previo al destete.', categoria: 'vacunacion' });
+    // -------- 1b. VACUNA RESPIRATORIA Y OCULAR — igual cálculo que clostridiales --------
+    eventos.push({ fecha: vac1, titulo: 'Vacunación contra enfermedades respiratorias y oculares — 1ª dosis (terneros/as)', descripcion: 'Vacunar terneros/as contra enfermedades respiratorias (IBR, DVB, PI3, BRSV) y queratoconjuntivitis infecciosa bovina. Puede vacunar junto a otras vacunas si lo realiza en el mismo día, preferentemente del otro lado de la tabla del cuello.', categoria: 'vacunacion' });
+    eventos.push({ fecha: vac2, titulo: 'Revacunación contra enfermedades respiratorias y oculares — 2ª dosis (terneros/as)', descripcion: 'Segunda dosis contra enfermedades respiratorias y oculares para completar inmunización previo al destete.', categoria: 'vacunacion' });
 
   }
 
@@ -397,8 +391,14 @@ function calcularPlan(p) {
     const fecha = addDays(finServicios, 45);
     eventos.push({
       fecha,
-      titulo: 'Vacunación contra Leptospirosis + Diagnóstico ecográfico',
-      descripcion: 'Realizar diagnóstico por ecografía de vientres en servicio y vacunación de hembras preñadas para evitar abortos.',
+      titulo: 'Vacunación contra Leptospirosis',
+      descripcion: 'Vacunación de hembras preñadas contra Leptospirosis para evitar abortos. Realizarla junto con el diagnóstico ecográfico de gestación.',
+      categoria: 'vacunacion'
+    });
+    eventos.push({
+      fecha,
+      titulo: 'Diagnóstico ecográfico de gestación',
+      descripcion: 'Realizar diagnóstico por ecografía de vientres para confirmar preñez, detectar mellizos y estimar fecha de parto. Momento clave para toma de decisiones de manejo del rodeo.',
       categoria: 'veterinario'
     });
     // Descarte de hembras — también en momento de ecografía
@@ -537,15 +537,15 @@ function calcularPlan(p) {
   // -------- 9. TRISTEZA BOVINA --------
   if (p.tristeza === 'si') {
     eventos.push({
-      fecha: proximoMes(5), // Junio
+      fecha: proximoMes(6), // Julio
       titulo: 'Vacunación contra Tristeza bovina (terneros/as)',
       descripcion: 'Vacunación contra Tristeza (Babesiosis/Anaplasmosis) de terneros/as mayores a los 3 meses. Aplicar en zona con presencia de garrapatas portadoras.',
       categoria: 'vacunacion'
     });
     eventos.push({
-      fecha: proximoMes(8), // Septiembre
+      fecha: proximoMes(9), // Octubre
       titulo: 'Revacunación contra Tristeza bovina (terneros/as)',
-      descripcion: 'Revacunación contra Tristeza de terneros/as, 3 meses después de la primera dosis para completar la inmunización.',
+      descripcion: 'Revacunación contra Tristeza de terneros/as para completar la inmunización.',
       categoria: 'vacunacion'
     });
   }
