@@ -91,19 +91,6 @@ body {
 }
 .leyenda-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 
-.plan-disclaimer {
-  font-size: 11px;
-  color: var(--gris);
-  font-style: italic;
-  line-height: 1.6;
-  padding: 12px 16px;
-  border-top: 0.5px solid var(--borde);
-  border-bottom: 0.5px solid var(--borde);
-  margin-bottom: 1.5rem;
-  background: var(--gris-claro);
-  border-radius: 8px;
-}
-
 /* VISTA ANUAL */
 .anual-grid {
   display: grid;
@@ -408,6 +395,13 @@ function calcularPlan(p) {
       descripcion: 'Realizar diagnóstico por ecografía de vientres en servicio y vacunación de hembras preñadas para evitar abortos.',
       categoria: 'veterinario'
     });
+    // Descarte de hembras — también en momento de ecografía
+    eventos.push({
+      fecha,
+      titulo: 'Descarte de hembras',
+      descripcion: 'Junto con la ecografía de diagnóstico de gestación es buen momento para que las hembras con problemas de ubre, abortos, mala dentición, prolapsos de útero, etc., sean clasificadas como descarte para los próximos servicios reproductivos.',
+      categoria: 'manejo'
+    });
   }
 
   // -------- 3. VACUNA REPRODUCTIVA PRE-SERVICIOS Y EVALUACIÓN DE TOROS --------
@@ -433,11 +427,11 @@ function calcularPlan(p) {
       descripcion: 'Segunda dosis de vacuna reproductiva para vaquillonas. Las vacas vacunadas el año anterior reciben una única dosis de revacunación anual 30 días antes del servicio. Categorías menores de 2 años deben estar desparasitadas.',
       categoria: 'vacunacion'
     });
-    // Descarte de hembras — mismo momento que revacunación reproductiva
+    // Descarte de hembras — julio
     eventos.push({
-      fecha: addDays(inicioServicios, -30),
+      fecha: proximoMes(6), // Julio
       titulo: 'Descarte de hembras',
-      descripcion: 'Es buen momento para que las hembras con problemas de ubre, abortos, mala dentición, prolapsos de útero, etc., sean clasificadas como descarte para los próximos servicios reproductivos.',
+      descripcion: 'Es buen momento para que las hembras con problemas de ubre, abortos, mala dentición, prolapsos de útero, etc., sean clasificadas como descarte para los próximos servicios reproductivos. Puede realizarse junto con la ecografía de diagnóstico de gestación.',
       categoria: 'manejo'
     });
     // Monitoreo de entore — primeros días de enero
@@ -535,24 +529,69 @@ function calcularPlan(p) {
   }
 
   // -------- 9. TRISTEZA BOVINA --------
-  if (p.tristeza === 'si' && finPartos) {
-    const vac1Tristeza = addDays(finPartos, 90);
-    const vac2Tristeza = addDays(vac1Tristeza, 60);
+  if (p.tristeza === 'si') {
     eventos.push({
-      fecha: vac1Tristeza,
+      fecha: proximoMes(5), // Junio
       titulo: 'Vacunación contra Tristeza bovina (terneros/as)',
       descripcion: 'Vacunación contra Tristeza (Babesiosis/Anaplasmosis) de terneros/as mayores a los 3 meses. Aplicar en zona con presencia de garrapatas portadoras.',
       categoria: 'vacunacion'
     });
     eventos.push({
-      fecha: vac2Tristeza,
+      fecha: proximoMes(8), // Septiembre
       titulo: 'Revacunación contra Tristeza bovina (terneros/as)',
-      descripcion: 'Revacunación contra Tristeza de terneros/as, 60 días después de la primera dosis para completar la inmunización.',
+      descripcion: 'Revacunación contra Tristeza de terneros/as, 3 meses después de la primera dosis para completar la inmunización.',
       categoria: 'vacunacion'
     });
   }
 
-  // -------- ABORTO Y PÉRDIDAS EMBRIONARIAS --------
+  // -------- PLANIFICAR PARICIÓN --------
+  eventos.push({
+    fecha: proximoMes(7), // Agosto
+    titulo: 'Planificar parición',
+    descripcion: 'Es buen momento para planificar la próxima parición: definir potreros de parición, infraestructura necesaria, personal disponible y manejo sanitario de los recién nacidos.',
+    categoria: 'manejo'
+  });
+
+  // -------- EVALUACIÓN DE CONDICIÓN CORPORAL --------
+  // Julio
+  eventos.push({
+    fecha: proximoMes(6), // Julio
+    titulo: 'Evaluación de condición corporal de vacas',
+    descripcion: 'Evaluar la condición corporal del rodeo de cría. Una buena condición corporal al parto y al servicio es clave para lograr altos porcentajes de preñez.',
+    categoria: 'manejo'
+  });
+  // Septiembre
+  eventos.push({
+    fecha: proximoMes(8), // Septiembre
+    titulo: 'Evaluación de condición corporal de vacas',
+    descripcion: 'Evaluar la condición corporal del rodeo de cría. Una buena condición corporal al parto y al servicio es clave para lograr altos porcentajes de preñez.',
+    categoria: 'manejo'
+  });
+  // Enero
+  eventos.push({
+    fecha: proximoMes(0), // Enero
+    titulo: 'Evaluación de condición corporal de vacas',
+    descripcion: 'Evaluar la condición corporal del rodeo de cría. Una buena condición corporal al parto y al servicio es clave para lograr altos porcentajes de preñez.',
+    categoria: 'manejo'
+  });
+  // Junto con ecografía (45 días post fin servicios)
+  if (finServicios) {
+    eventos.push({
+      fecha: addDays(finServicios, 45),
+      titulo: 'Evaluación de condición corporal de vacas',
+      descripcion: 'Evaluar la condición corporal del rodeo de cría junto con la ecografía de diagnóstico de gestación. Una buena condición corporal al parto y al servicio es clave para lograr altos porcentajes de preñez.',
+      categoria: 'manejo'
+    });
+  }
+  // Inicio de servicios
+  if (inicioServicios) {
+    eventos.push({
+      fecha: inicioServicios,
+      titulo: 'Evaluación de condición corporal de vacas',
+      descripcion: 'Evaluar la condición corporal del rodeo al inicio de los servicios reproductivos. Es fundamental que las vacas entren al servicio con buena condición corporal para maximizar el porcentaje de preñez.',
+      categoria: 'manejo'
+    });
+  }
   if (p.neospora === 'si') {
     [1, 2, 3, 4, 5, 6, 7, 8].forEach(m => { // Feb a Sep
       eventos.push({
@@ -682,10 +721,6 @@ function render(p, eventos, porMes) {
           <span>${v.nombre}</span>
         </div>
       `).join('')}
-    </div>
-
-    <div class="plan-disclaimer">
-      Este plan sanitario no pretende sustituir el asesoramiento profesional de un veterinario. Tiene la función de ser un recordatorio de eventos importantes en la producción de carne bovina. Es importante que consulte a su profesional de confianza a fin de evitar efectos adversos de medicamentos o por la interacción de éstos cuando se suministran juntos, así como los lugares de aplicación.
     </div>
 
     <div id="vistaAnual" class="anual-grid">
